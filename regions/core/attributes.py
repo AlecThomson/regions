@@ -102,6 +102,17 @@ class ScalarSkyCoord(RegionAttribute):
             raise ValueError(f'{self.name!r} must be a scalar SkyCoord')
 
 
+class VectorSkyCoord(RegionAttribute):
+    """
+    Descriptor class to check that value is a vector
+    `~astropy.coordinates.SkyCoord`.
+    """
+
+    def _validate(self, value):
+        if not (isinstance(value, SkyCoord) and not value.isscalar):
+            raise ValueError(f'{self.name!r} must be a vector SkyCoord')
+
+
 class OneDSkyCoord(RegionAttribute):
     """
     Descriptor class to check that value is a 1D
@@ -130,6 +141,22 @@ class ScalarAngle(RegionAttribute):
         else:
             raise ValueError(f'{self.name!r} must be a scalar angle')
 
+class VectorAngle(RegionAttribute):
+    """
+    Descriptor class to check that value is a vector angle, either an
+    `~astropy.coordinates.Angle` or `~astropy.units.Quantity` with
+    angular units.
+    """
+
+    def _validate(self, value):
+        if isinstance(value, Quantity):
+            if value.isscalar:
+                raise ValueError(f'{self.name!r} must be a vector')
+
+            if not value.unit.physical_type == 'angle':
+                raise ValueError(f'{self.name!r} must have angular units')
+        else:
+            raise ValueError(f'{self.name!r} must be a vector angle')
 
 class PositiveScalarAngle(RegionAttribute):
     """
@@ -152,6 +179,26 @@ class PositiveScalarAngle(RegionAttribute):
             raise ValueError(f'{self.name!r} must be a strictly positive '
                              'scalar angle')
 
+class PositiveVectorAngle(RegionAttribute):
+    """
+    Descriptor class to check that value is a strictly positive
+    vector angle, either an `~astropy.coordinates.Angle` or
+    `~astropy.units.Quantity` with angular units.
+    """
+
+    def _validate(self, value):
+        if isinstance(value, Quantity):
+            if value.isscalar:
+                raise ValueError(f'{self.name!r} must be a vector')
+
+            if not value.unit.physical_type == 'angle':
+                raise ValueError(f'{self.name!r} must have angular units')
+
+            if not np.all(value > 0):
+                raise ValueError(f'{self.name!r} must be strictly positive')
+        else:
+            raise ValueError(f'{self.name!r} must be a strictly positive '
+                             'vector angle')
 
 class RegionType(RegionAttribute):
     """
