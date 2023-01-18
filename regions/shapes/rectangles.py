@@ -13,6 +13,7 @@ from regions.core.attributes import (
     VectorAngle,
     VectorSkyCoord,
 )
+from regions.shapes.rectangle import RectanglePixelRegion, RectangleSkyRegion
 from regions.core.core import PixelRegion, SkyRegion
 from regions.core.metadata import RegionMeta, RegionVisual
 
@@ -27,6 +28,32 @@ class RectanglePixelRegions(PixelRegion):
         self.angles = angles
         self.meta = meta or RegionMeta()
         self.visual = visual or RegionVisual()
+
+    def __len__(self):
+        return len(self.centers)
+
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            return RectanglePixelRegions(
+                self.centers[item],
+                self.widths[item],
+                self.heights[item],
+                self.angles[item],
+                meta=self.meta,
+                visual=self.visual,
+            )
+        return RectanglePixelRegion(
+            self.centers[item],
+            self.widths[item],
+            self.heights[item],
+            self.angles[item],
+            meta=self.meta,
+            visual=self.visual,
+        )
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self[i]
 
     @property
     def area(self):
@@ -100,6 +127,32 @@ class RectangleSkyRegions(SkyRegion):
         self.meta = meta or RegionMeta()
         self.visual = visual or RegionVisual()
 
+    def __len__(self):
+        return len(self.centers)
+
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            return RectangleSkyRegions(
+                self.centers[item],
+                self.widths[item],
+                self.heights[item],
+                self.angles[item],
+                meta=self.meta,
+                visual=self.visual,
+            )
+        return RectangleSkyRegion(
+            self.centers[item],
+            self.widths[item],
+            self.heights[item],
+            self.angles[item],
+            meta=self.meta,
+            visual=self.visual,
+        )
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self[i]
+
     @property
     def area(self):
         return self.widths * self.heights
@@ -108,8 +161,8 @@ class RectangleSkyRegions(SkyRegion):
         centers, pixscales, north_angles = pixel_scale_angle_at_skycoord(
             self.centers, wcs
         )
-        widths = (self.widths / pixscales).to(u.pix)
-        heights = (self.heights / pixscales).to(u.pix)
+        widths = (self.widths / pixscales).to(u.pix).value
+        heights = (self.heights / pixscales).to(u.pix).value
         # Region sky angles are defined relative to the WCS longitude axis;
         # photutils aperture sky angles are defined as the PA of the
         # semimajor axis (i.e., relative to the WCS latitude axis)
@@ -170,5 +223,5 @@ if __name__ == "__main__":
     )
     wcs = WCS(header)
     print(rectangles.to_pixel(wcs))
-    embed()
     print(rectangles.contains(coords))
+    embed()
