@@ -140,6 +140,7 @@ class RectangleSkyRegions(SkyRegion):
 
 
 if __name__ == "__main__":
+    # A little demo script
     from astropy.io import fits
 
     rectangles = RectangleSkyRegions(
@@ -149,7 +150,7 @@ if __name__ == "__main__":
         angles=np.array([1, 2, 3]) * u.deg,
     )
     print(rectangles)
-    coords = SkyCoord([1, 2, 3], [1, 2, 3], unit="deg")
+    coords = SkyCoord([0, 1, 2, 3, 4], [0, 1, 2, 3, 4], unit="deg")
     header = fits.Header(
         {
             "NAXIS": 2,
@@ -169,4 +170,4 @@ if __name__ == "__main__":
     )
     wcs = WCS(header)
     print(rectangles.to_pixel(wcs))
-    embed()
+    print(rectangles.contains(coords))
