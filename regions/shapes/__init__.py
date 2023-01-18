@@ -11,3 +11,4 @@ from .point import *  # noqa: F401, F403
 from .polygon import *  # noqa: F401, F403
 from .rectangle import *  # noqa: F401, F403
 from .text import *  # noqa: F401, F403
+from .rectangles import *  # noqa: F401, F403
