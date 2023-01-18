@@ -13,9 +13,9 @@ from regions.core.attributes import (
     VectorAngle,
     VectorSkyCoord,
 )
-from regions.shapes.rectangle import RectanglePixelRegion, RectangleSkyRegion
 from regions.core.core import PixelRegion, SkyRegion
 from regions.core.metadata import RegionMeta, RegionVisual
+from regions.shapes.rectangle import RectanglePixelRegion, RectangleSkyRegion
 
 
 class RectanglePixelRegions(PixelRegion):
